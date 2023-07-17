@@ -1,0 +1,141 @@
+#include "stdafx.h"
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+using namespace std;
+
+class String {
+public:
+	String(char str[]) {
+		count_upper = 0;
+		count_lower = 0;
+		count_space = 0;
+		int size = strlen(str);
+		for (int i = 0; i < size; ++i)
+		{
+			if (isupper(str[i])) {
+				count_upper++;
+			}
+			else if (islower(str[i])) {
+				count_lower++;
+			}
+			else if (str[i] == 32) {
+				count_space++;
+			}
+		}
+		cout << "大写字母个数：" << count_upper << endl;
+		cout << "小写字母个数：" << count_lower << endl;
+		cout << "空格字符个数：" << count_space << endl;
+	}
+private:
+	int count_upper;
+	int count_lower;
+	int count_space;
+	char str[100];
+};
+void testh1() {
+	String str("BNBGigi noln  OJHO");
+}
+
+int cmp(const void* a, const void* b) {
+	return *(int *)a - *(int *)b;
+}
+class intV {
+public:
+	intV() {
+		for (int i = 0; i < 10; ++i)
+		{
+			v[i] = 0;
+		}
+	}
+	void insertVal(int num) {
+		cout << "请输入" << num << "个整型数" << endl;
+		for (int i = 0; i < num; ++i)
+		{
+			cin >> v[i];
+		}
+	}
+	void showVal() {
+		int size = 0;
+		int i = 0;
+		while (v[i] != 0) {
+			size++;
+			i++;
+		}
+		qsort(v, size, sizeof(int), &cmp); 
+		for (i = 0; i < size; ++i)
+		{
+			cout << v[i] << ' ';
+		}
+		cout << endl;
+	}
+
+private:
+	int v[10];
+};
+void testh2() {
+	intV i;
+	i.insertVal(5);
+	i.showVal();
+}
+int main() {
+	testh2();
+}
+// 0717.cpp : 定义控制台应用程序的入口点。
+//
+
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include "person.hpp"
+using namespace std;
+
+void test01() {
+	Person<string, int> p1("Spike", 40);
+	p1.showPerson();
+}
+
+template<class T1, class T2>
+class Human;
+
+// 全局函数类外实现
+template<class T1, class T2>
+void printHuman2(Human<T1, T2> h) {        // 全局函数不用加作用域
+	cout << "类外实现" << endl;
+	cout << h.Name << endl;
+	cout << h.Age << endl;
+}
+
+template<class T1, class T2>
+class Human {
+	// 全局函数类内实现
+	friend void printHuman1(Human<T1, T2> h) {
+		cout << "类内实现" << endl;
+		cout << h.Name << endl;
+		cout << h.Age << endl;
+	}
+	// 加空模板参数列表
+	// 如果时全局函数，类外实现，需要让编译器提前知道它的存在
+	friend void printHuman2<>(Human<T1, T2> h);
+public:
+	Human(T1 name, T2 age) {
+		this->Name = name;
+		this->Age = age;
+	}
+private:
+	T1 Name;
+	T2 Age;
+};
+
+void test02() {
+	Human<string, int> h1("Tom", 16);
+	printHuman1(h1);
+	printHuman2(h1);
+}
+
+// int main()
+// {
+// 	
+// 	return 0;
+// }
+
